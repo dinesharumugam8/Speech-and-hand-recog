@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recognition Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            margin-top: 20px;
+            color: #666;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        .speak-button,
+        .stop-button,
+        .download-button {
+            margin-top: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Added to remove extra space */
+            font-size: 16px; /* Font size applied to all buttons */
+        }
+
+        .speak-button:hover,
+        .stop-button:hover,
+        .download-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recognition Result</h1>
+        <p>{{ result }}</p>
+        <button class="speak-button" onclick="speakText()">Speak</button>
+        <button class="stop-button" onclick="stopSpeech()">Stop</button>
+        <a href="#" class="download-button" onclick="downloadAudio()">Download Audio</a>
+    </div>
+
+    <script>
+        var speechSynthesisInstance = window.speechSynthesis;
+        var currentSpeech;
+
+        function speakText() {
+            // Get the recognized text
+            var text = document.querySelector('p').textContent;
+
+            // Cancel any ongoing speech
+            stopSpeech();
+
+            // Create a new SpeechSynthesisUtterance object
+            var speech = new SpeechSynthesisUtterance();
+
+            // Set the text to be spoken
+            speech.text = text;
+
+            // Speak the text
+            speechSynthesisInstance.speak(speech);
+
+            // Store the current speech object
+            currentSpeech = speech;
+        }
+
+        function stopSpeech() {
+            if (currentSpeech) {
+                // Cancel the current speech
+                speechSynthesisInstance.cancel();
+                currentSpeech = null;
+            }
+        }
+
+        function downloadAudio() {
+            // Get the recognized text
+            var text = document.querySelector('p').textContent;
+
+            // Create a new SpeechSynthesisUtterance object
+            var speech = new SpeechSynthesisUtterance();
+
+            // Set the text to be spoken
+            speech.text = text;
+
+            // Create a blob with the synthesized speech
+            var blob = new Blob([text], { type: 'audio/wav' });
+
+            // Create a temporary anchor element to trigger the download
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'spoken_audio.wav';
+            a.click();
+        }
+    </script>
+</body>
+</html>
